@@ -15,12 +15,16 @@ const db = mysql.createConnection(
     password: 'Carmine37!',
     database: 'election'
   },
-  console.log('Connected to the eleciton database.')
+  console.log('Connected to the election database.')
 );
 
 // Get All Candidates
 app.get('/api/canidates', (req, res) => {
-  const sql = `SELECT * FROM canidates`;
+  const sql = `SELECT canidates.*, parties.name 
+             AS party_name 
+             FROM canidates 
+             LEFT JOIN parties 
+             ON canidates.party_id = parties.id`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -36,7 +40,12 @@ app.get('/api/canidates', (req, res) => {
 
 // Get Single Candidate
 app.get('/api/canidate/:id', (req, res) => {
-  const sql = `SELECT * FROM canidates WHERE id =?`;
+  const sql = `SELECT canidates.*, parties.name 
+             AS party_name 
+             FROM canidates 
+             LEFT JOIN parties 
+             ON canidates.party_id = parties.id 
+             WHERE canidates.id = ?`;
   const params = [req.params.id];
 
   db.query(sql, params, (err, row) => {
